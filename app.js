@@ -8,8 +8,8 @@
 // Game variables
 let min = 1;
 let max =  10;
-let correctNum = 2; // this will change later
-let guessesLeft = 3; // initial value
+let correctNum = generateRandomNum(min, max); 
+let guessesLeft = 3; 
 
 // UI Elements
 const game = document.querySelector('#game');
@@ -23,13 +23,20 @@ const message = document.querySelector('.message');
 minNum.textContent = min;
 maxNum.textContent = max;
 
+// Play Again Event Listener
+game.addEventListener('mousedown', function(e) {
+   if (e.target.className === 'play-again') {
+      window.location.reload();
+   }
+})
+
 // Event listener for "guess" and "submit" button
 guessBtn.addEventListener('click', function(){
    // This value needs to be a number, not a string, so the string is parsed using parseInt and then set to a variable.
    let guess = parseInt(guessInput.value);
 
    // validate the input using a conditional: there must be an input value, and it must be between the min and max parameters.
-   if(guess === NaN || guess < min ||  guess > max) {
+   if(isNaN(guess) || guess < min ||  guess > max) {
       setMessage(`You must enter a number between ${min} and ${max}`, 'red');
    } 
    // if correctNum is chosen
@@ -43,7 +50,6 @@ guessBtn.addEventListener('click', function(){
       } else {
          // Game continues; player still has guesses remaining.  
          guessInput.style.borderColor = 'red';
-
          // clear input
          guessInput.value = '';
          setMessage(`${guess} is NOT correct. You have ${guessesLeft} more chances to guess the correct number.`, 'red'); 
@@ -61,9 +67,20 @@ function gameOver(won,msg) {
    guessInput.style.borderColor = color;
    // Set text color
    message.style.color = color;
-
    // Set message
    setMessage(msg);
+
+   // Play again
+   guessBtn.value = 'Play Again?';
+   // need to add a class for the new version of this button for an event handler
+   // +=  => appends
+   guessBtn.className += 'play-again';
+}
+
+// generateRandomNum() function 
+// generates random number for new game.
+function generateRandomNum(min, max){
+   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 // setMessage() function
@@ -71,6 +88,6 @@ function setMessage(msg, color) {
    // this sets the color of the message to what is passed in as the value.
    message.style.color = color;
    message.textContent = msg;
-   };
+};
 
 
